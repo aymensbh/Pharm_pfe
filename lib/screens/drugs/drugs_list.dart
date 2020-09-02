@@ -61,6 +61,58 @@ class _DrugsListState extends State<DrugsList> {
               children: List.generate(
                   drugList.length,
                   (index) => ListTile(
+                        onLongPress: () async {
+                          try {
+                            if (await showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    elevation: 2,
+                                    title: Text("Supprimer!",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2
+                                            .copyWith(
+                                                color: Style.primaryColor)),
+                                    actions: [
+                                      FlatButton(
+                                          splashColor:
+                                              Style.lightBackgroundColor,
+                                          onPressed: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                          child: Text("Annuler",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption
+                                                  .copyWith(
+                                                      color: Style
+                                                          .secondaryColor))),
+                                      FlatButton(
+                                          splashColor:
+                                              Style.lightBackgroundColor,
+                                          onPressed: () {
+                                            Navigator.of(context).pop(true);
+                                          },
+                                          child: Text("Supprimer",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption
+                                                  .copyWith(
+                                                      color: Style.redColor))),
+                                    ],
+                                  );
+                                })) {
+                              //TODO DELETE DRUG FROM DB
+                              setState(() {
+                                drugList.removeAt(index);
+                              });
+                            }
+                          } catch (e) {
+                            return;
+                          }
+                        },
                         onTap: () {
                           Navigator.of(context)
                               .push(CupertinoPageRoute(builder: (context) {
@@ -76,7 +128,7 @@ class _DrugsListState extends State<DrugsList> {
                           style: Theme.of(context).textTheme.bodyText2,
                         ),
                         subtitle: Text(
-                          drugList[index].cinit,
+                          drugList[index].cinit.toString(),
                           style: Theme.of(context).textTheme.caption,
                         ),
                         trailing: Padding(

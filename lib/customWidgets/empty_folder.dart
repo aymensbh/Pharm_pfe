@@ -21,7 +21,7 @@ class EmptyFolder extends StatelessWidget {
             height: 10,
           ),
           Text(
-            "+Pour ajouter!",
+            "Dossier vide!",
             style: Theme.of(context).textTheme.caption,
           ),
         ],

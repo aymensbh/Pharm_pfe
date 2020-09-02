@@ -13,26 +13,22 @@ class MyApp extends StatelessWidget {
       home: LoginPage(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: TextTheme(
-          bodyText1: TextStyle(
-            fontSize: 24,
-            color: Style.primaryColor
-          ),//Large
-          bodyText2: TextStyle(
-            fontSize: 18,
-            color: Style.primaryColor
-          ),//medium
-          caption: TextStyle(
-            fontSize: 14,
-            color: Style.secondaryColor
-          ),//small
-        ),
-        appBarTheme: AppBarTheme(
-          iconTheme: IconThemeData(
-            color:Style.darkBackgroundColor
-          )
-        )
-      ),
+          textTheme: TextTheme(
+            bodyText1: TextStyle(
+                fontSize: 24,
+                fontFamily: 'bls',
+                color: Style.primaryColor), //Large
+            bodyText2: TextStyle(
+                fontSize: 18,
+                fontFamily: 'bls',
+                color: Style.primaryColor), //medium
+            caption: TextStyle(
+                fontSize: 14,
+                fontFamily: 'bls',
+                color: Style.secondaryColor), //small
+          ),
+          appBarTheme: AppBarTheme(
+              iconTheme: IconThemeData(color: Style.darkBackgroundColor))),
     );
   }
 }

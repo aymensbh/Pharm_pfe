@@ -1,6 +1,13 @@
 class Patient {
   int id;
-  String fullname, birthdate, phone, addess;
+  String fullname, doctor, birthdate, phone, addess;
+  num sc;
 
-  Patient({this.id, this.fullname, this.birthdate, this.phone, this.addess});
+  Patient(
+      {this.id,
+      this.fullname,
+      this.birthdate,
+      this.sc,
+      this.phone,
+      this.addess});
 }

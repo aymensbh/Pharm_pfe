@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pharm_pfe/customWidgets/custom_grid_item.dart';
 import 'package:pharm_pfe/customWidgets/custom_grid_tool.dart';
-import 'package:pharm_pfe/screens/about/faq.dart';
+import 'package:pharm_pfe/screens/others/about.dart';
 import 'package:pharm_pfe/screens/analisis/analysis_history.dart';
 import 'package:pharm_pfe/screens/drugs/drugs_list.dart';
+import 'package:pharm_pfe/screens/others/report.dart';
 import 'package:pharm_pfe/screens/patients/patients_list.dart';
 import 'package:pharm_pfe/style/style.dart';
 
@@ -18,16 +19,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Style.lightBackgroundColor,
-      // drawer: Drawer(
-      //     child: Container(
-      //   color: Style.darkBackgroundColor,
-      // )),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {},
-      //   child: Icon(Icons.add),
-      //   backgroundColor: Style.accentColor,
-      //   foregroundColor: Style.darkBackgroundColor,
-      // ),
       appBar: AppBar(
         actions: <Widget>[
           PopupMenuButton(
@@ -113,7 +104,12 @@ class _HomePageState extends State<HomePage> {
               CustomGridToolItem(
                 icon: Icons.info_outline,
                 color: Style.secondaryColor,
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context)
+                      .push(CupertinoPageRoute(builder: (context) {
+                    return Report();
+                  }));
+                },
               ),
             ],
           ))

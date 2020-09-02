@@ -4,7 +4,7 @@ import 'package:pharm_pfe/customWidgets/empty_folder.dart';
 import 'package:pharm_pfe/entities/analysis.dart';
 import 'package:pharm_pfe/style/style.dart';
 
-import 'add_analysis.dart';
+import 'add_edit_analysis.dart';
 
 class AnalysisHistoryPage extends StatefulWidget {
   @override
@@ -31,7 +31,7 @@ class _AnalysisHistoryPageState extends State<AnalysisHistoryPage> {
                 onPressed: () {
                   Navigator.of(context)
                       .push(CupertinoPageRoute(builder: (context) {
-                    return AddPoch();
+                    return AddEditAnalisis();
                   }));
                 }),
           )
@@ -52,14 +52,18 @@ class _AnalysisHistoryPageState extends State<AnalysisHistoryPage> {
                   (index) => ListTile(
                         onTap: () {
                           Navigator.of(context)
-                              .push(CupertinoPageRoute(builder: (context) {}));
+                              .push(CupertinoPageRoute(builder: (context) {
+                            return AddEditAnalisis(
+                              analysis: analysisList[index],
+                            );
+                          }));
                         },
                         leading: Icon(
                           Icons.multiline_chart,
                           color: Style.yellowColor,
                         ),
                         subtitle: Text(
-                          analysisList[index].result,
+                          analysisList[index].adminDose.toString(),
                           style: Theme.of(context).textTheme.caption,
                         ),
                         title: Text(

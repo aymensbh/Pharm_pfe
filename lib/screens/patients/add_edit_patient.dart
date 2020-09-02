@@ -11,7 +11,11 @@ class AddEditPatient extends StatefulWidget {
 }
 
 class _AddEditPatientState extends State<AddEditPatient> {
-  TextEditingController fullnameController, phoneController, addressController;
+  TextEditingController fullnameController,
+      scController,
+      phoneController,
+      doctorController,
+      addressController;
   String birthDate;
   GlobalKey<FormState> _formKey;
 
@@ -41,12 +45,16 @@ class _AddEditPatientState extends State<AddEditPatient> {
     if (widget.patient != null) {
       fullnameController = TextEditingController(text: widget.patient.fullname);
       phoneController = TextEditingController(text: widget.patient.phone);
+      doctorController = TextEditingController(text: widget.patient.doctor);
       addressController = TextEditingController(text: widget.patient.addess);
+      scController = TextEditingController(text: widget.patient.sc.toString());
       birthDate = widget.patient.birthdate;
     } else {
       fullnameController = TextEditingController();
       phoneController = TextEditingController();
+      doctorController = TextEditingController();
       addressController = TextEditingController();
+      scController = TextEditingController();
       birthDate = "";
     }
     super.initState();
@@ -59,6 +67,7 @@ class _AddEditPatientState extends State<AddEditPatient> {
           id: 1,
           addess: addressController.text.trim(),
           birthdate: "2020/12/12",
+          sc: num.parse(scController.text),
           fullname: fullnameController.text.trim(),
           phone: phoneController.text.trim()));
     }
@@ -87,13 +96,27 @@ class _AddEditPatientState extends State<AddEditPatient> {
       body: Form(
         key: _formKey,
         child: ListView(
+          physics: BouncingScrollPhysics(),
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
                 style: Theme.of(context).textTheme.bodyText2,
-                decoration: _inputDecoration("Nom complet"),
+                decoration: _inputDecoration("Nom complet de patient"),
                 controller: fullnameController,
+                validator: (input) {
+                  if (input.trim().isEmpty || input.trim().length > 48) {
+                    return "Veuiller saisir un nom complet";
+                  }
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                style: Theme.of(context).textTheme.bodyText2,
+                decoration: _inputDecoration("Docteur"),
+                controller: doctorController,
                 validator: (input) {
                   if (input.trim().isEmpty || input.trim().length > 48) {
                     return "Veuiller saisir un nom complet";
@@ -120,6 +143,20 @@ class _AddEditPatientState extends State<AddEditPatient> {
                                 : Theme.of(context).textTheme.bodyText2,
                           )),
                     ))),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                style: Theme.of(context).textTheme.bodyText2,
+                decoration: _inputDecoration("Surface corporelle"),
+                controller: scController,
+                keyboardType: TextInputType.number,
+                validator: (input) {
+                  if (input.trim().isEmpty || input.trim().length > 48) {
+                    return "Veuiller saisir une sc";
+                  }
+                },
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(

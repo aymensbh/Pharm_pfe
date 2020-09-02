@@ -12,7 +12,7 @@ class _AboutState extends State<About> {
     return Scaffold(
       backgroundColor: Style.darkBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Style.primaryColor,
+        backgroundColor: Style.secondaryColor,
         title: Text(
           "About",
           style: Theme.of(context)
