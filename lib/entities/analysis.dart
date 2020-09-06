@@ -33,7 +33,9 @@ class Analysis {
   }
 
   num claculateReliquat() {
-    reliquat = ((finalVolume / 26.3).floor() + 1) * 26.3 - finalVolume;
+    //TODO presentation hmmmmmm ceil
+    reliquat = ((finalVolume / drug.presentation).ceil()) * drug.presentation -
+        finalVolume;
     return reliquat;
   }
 

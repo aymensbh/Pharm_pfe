@@ -1,20 +1,28 @@
-class User{
+class User {
   int id;
-  String username,password;
+  String username, password;
 
-  User({this.id,this.username,this.password});
+  User({this.id, this.username, this.password});
 
-
-  bool login(String username,String password){
-    if(this.username==username && this.password==password){
-      return true;
-    }else{
-      return false;
-    }
+  User.fromMap(Map<String, dynamic> map) {
+    id = map["user_id"];
+    username = map["user_name"];
+    password = map["user_password"];
   }
 
-  bool signup(){
+  Map<String, dynamic> toMap() {
+    return {
+      "user_id": id,
+      "user_name": username,
+      "user_password": password,
+    };
+  }
+
+  bool login(String username, String password) {
+    //TODO login
+  }
+
+  bool signup() {
     //TODO signup
   }
-
 }

@@ -46,7 +46,7 @@ class _AddEditPatientState extends State<AddEditPatient> {
       fullnameController = TextEditingController(text: widget.patient.fullname);
       phoneController = TextEditingController(text: widget.patient.phone);
       doctorController = TextEditingController(text: widget.patient.doctor);
-      addressController = TextEditingController(text: widget.patient.addess);
+      addressController = TextEditingController(text: widget.patient.address);
       scController = TextEditingController(text: widget.patient.sc.toString());
       birthDate = widget.patient.birthdate;
     } else {
@@ -65,7 +65,7 @@ class _AddEditPatientState extends State<AddEditPatient> {
       //TODO: save Patient
       Navigator.of(context).pop(Patient(
           id: 1,
-          addess: addressController.text.trim(),
+          address: addressController.text.trim(),
           birthdate: "2020/12/12",
           sc: num.parse(scController.text),
           fullname: fullnameController.text.trim(),

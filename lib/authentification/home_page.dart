@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pharm_pfe/customWidgets/custom_grid_item.dart';
 import 'package:pharm_pfe/customWidgets/custom_grid_tool.dart';
+import 'package:pharm_pfe/entities/user.dart';
 import 'package:pharm_pfe/screens/others/about.dart';
 import 'package:pharm_pfe/screens/analisis/analysis_history.dart';
 import 'package:pharm_pfe/screens/drugs/drugs_list.dart';
@@ -10,6 +11,10 @@ import 'package:pharm_pfe/screens/patients/patients_list.dart';
 import 'package:pharm_pfe/style/style.dart';
 
 class HomePage extends StatefulWidget {
+  final User user;
+
+  const HomePage({Key key, this.user}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
