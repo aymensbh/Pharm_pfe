@@ -7,8 +7,9 @@ class Style {
   static Color darkBackgroundColor = Colors.white;
   static Color lightBackgroundColor = Color(0xffdfe4ea);
   static Color redColor = Colors.redAccent;
+  static Color orangeColor = Color(0xffff6348);
   static Color yellowColor = Color(0xffe1b12c);
-  static Color greenColor = Color(0xff44bd32);
+  static Color greenColor = Color(0xff2ed573);
   static Color purpleColor = Color(0xff8c7ae6);
   static Color blueColor = Color(0xff0097e6);
 }

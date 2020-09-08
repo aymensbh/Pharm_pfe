@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:pharm_pfe/backend/sqlitedatabase_helper.dart';
 import 'package:pharm_pfe/entities/drug.dart';
 import 'package:pharm_pfe/style/style.dart';
 
 class AddEditDrug extends StatefulWidget {
   final Drug drug;
+  final int userid;
 
-  const AddEditDrug({Key key, this.drug}) : super(key: key);
+  const AddEditDrug({Key key, this.drug, this.userid}) : super(key: key);
   @override
   _AddEditDrugState createState() => _AddEditDrugState();
 }
@@ -227,19 +229,61 @@ class _AddEditDrugState extends State<AddEditDrug> {
 
   _validateInput() {
     if (_formKey.currentState.validate()) {
-      //TODO: Save médicament in db
-      print(cinitController.text);
-      Navigator.of(context).pop(Drug(
-          id: 1,
-          cinit: num.parse(cinitController.text.trim()),
-          cmax: num.parse(cmaxController.text.trim()),
-          cmin: num.parse(cminController.text.trim()),
-          name: drugNameController.text.trim(),
-          lab: labController.text.trim(),
-          presentation: num.parse(presentationController.text.trim()),
-          price: num.parse(priceController.text.trim()),
-          stability: num.parse(stabilityController.text.trim()),
-          passologie: num.parse(passologieController.text.trim())));
+      if (widget.drug == null) {
+        DatabaseHelper.insertDrug(Drug(
+                id: null,
+                userid: widget.userid,
+                cinit: num.parse(cinitController.text.trim()),
+                cmax: num.parse(cmaxController.text.trim()),
+                cmin: num.parse(cminController.text.trim()),
+                name: drugNameController.text.trim(),
+                lab: labController.text.trim(),
+                presentation: num.parse(presentationController.text.trim()),
+                price: num.parse(priceController.text.trim()),
+                stability: num.parse(stabilityController.text.trim()),
+                passologie: num.parse(passologieController.text.trim())))
+            .then((value) {
+          Navigator.of(context).pop(Drug(
+              id: value,
+              userid: widget.userid,
+              cinit: num.parse(cinitController.text.trim()),
+              cmax: num.parse(cmaxController.text.trim()),
+              cmin: num.parse(cminController.text.trim()),
+              name: drugNameController.text.trim(),
+              lab: labController.text.trim(),
+              presentation: num.parse(presentationController.text.trim()),
+              price: num.parse(priceController.text.trim()),
+              stability: num.parse(stabilityController.text.trim()),
+              passologie: num.parse(passologieController.text.trim())));
+        });
+      } else {
+        DatabaseHelper.updateDrug(Drug(
+                id: widget.drug.id,
+                userid: widget.userid,
+                cinit: num.parse(cinitController.text.trim()),
+                cmax: num.parse(cmaxController.text.trim()),
+                cmin: num.parse(cminController.text.trim()),
+                name: drugNameController.text.trim(),
+                lab: labController.text.trim(),
+                presentation: num.parse(presentationController.text.trim()),
+                price: num.parse(priceController.text.trim()),
+                stability: num.parse(stabilityController.text.trim()),
+                passologie: num.parse(passologieController.text.trim())))
+            .then((value) {
+          Navigator.of(context).pop(Drug(
+              id: widget.drug.id,
+              userid: widget.userid,
+              cinit: num.parse(cinitController.text.trim()),
+              cmax: num.parse(cmaxController.text.trim()),
+              cmin: num.parse(cminController.text.trim()),
+              name: drugNameController.text.trim(),
+              lab: labController.text.trim(),
+              presentation: num.parse(presentationController.text.trim()),
+              price: num.parse(priceController.text.trim()),
+              stability: num.parse(stabilityController.text.trim()),
+              passologie: num.parse(passologieController.text.trim())));
+        });
+      }
     }
   }
 }

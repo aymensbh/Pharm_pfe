@@ -1,5 +1,5 @@
 class Drug {
-  int id;
+  int id, userid;
   String name, lab;
   num cinit, cmax, cmin, passologie, presentation, stability, price;
 
@@ -11,6 +11,7 @@ class Drug {
       this.presentation,
       this.stability,
       this.price,
+      this.userid,
       this.cmax,
       this.cmin,
       this.passologie});
@@ -27,6 +28,7 @@ class Drug {
     cmax = map["drug_cmax"];
     cmin = map["drug_cmin"];
     passologie = map["drug_passologie"];
+    userid = map["user_id"];
   }
 
   Map<String, dynamic> toMap() {
@@ -41,6 +43,7 @@ class Drug {
       "drug_cmax": cmax,
       "drug_cmin": cmin,
       "drug_passologie": passologie,
+      "user_id": userid
     };
   }
 }

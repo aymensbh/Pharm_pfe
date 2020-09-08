@@ -1,24 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pharm_pfe/backend/sqlitedatabase_helper.dart';
 import 'package:pharm_pfe/customWidgets/empty_folder.dart';
 import 'package:pharm_pfe/entities/drug.dart';
+import 'package:pharm_pfe/entities/user.dart';
 import 'package:pharm_pfe/screens/drugs/add_edit_drug.dart';
 import 'package:pharm_pfe/style/style.dart';
 
 class DrugsList extends StatefulWidget {
+  final User user;
+
+  const DrugsList({Key key, this.user}) : super(key: key);
   @override
   _DrugsListState createState() => _DrugsListState();
 }
 
 class _DrugsListState extends State<DrugsList> {
-  List<Drug> drugList = [
-    // Drug(id: 1, dose: "1.2ml", name: "Rovamivine"),
-    // Drug(id: 2, dose: "1.2ml", name: "Doliprane"),
-  ];
+  List<Drug> _drugList = [];
 
   @override
   void initState() {
-    //TODO get data from db
+    DatabaseHelper.selectDrug(widget.user.id).then((value) {
+      List.generate(value.length, (index) {
+        setState(() {
+          _drugList.add(Drug.fromMap(value[index]));
+        });
+      });
+    });
     super.initState();
   }
 
@@ -36,11 +44,14 @@ class _DrugsListState extends State<DrugsList> {
                 onPressed: () {
                   Navigator.of(context)
                       .push(CupertinoPageRoute(builder: (context) {
-                    return AddEditDrug();
+                    return AddEditDrug(
+                      drug: null,
+                      userid: widget.user.id,
+                    );
                   })).then((value) {
                     if (value != null) {
                       setState(() {
-                        drugList.insert(0, value);
+                        _drugList.insert(0, value);
                       });
                     }
                   });
@@ -54,12 +65,12 @@ class _DrugsListState extends State<DrugsList> {
                 .copyWith(color: Style.darkBackgroundColor)),
         backgroundColor: Style.redColor,
       ),
-      body: drugList.isEmpty
+      body: _drugList.isEmpty
           ? EmptyFolder(icon: Icons.inbox, color: Style.redColor)
           : ListView(
               physics: BouncingScrollPhysics(),
               children: List.generate(
-                  drugList.length,
+                  _drugList.length,
                   (index) => ListTile(
                         onLongPress: () async {
                           try {
@@ -104,9 +115,11 @@ class _DrugsListState extends State<DrugsList> {
                                     ],
                                   );
                                 })) {
-                              //TODO DELETE DRUG FROM DB
-                              setState(() {
-                                drugList.removeAt(index);
+                              DatabaseHelper.deleteDrug(_drugList[index].id)
+                                  .then((value) {
+                                setState(() {
+                                  _drugList.removeAt(index);
+                                });
                               });
                             }
                           } catch (e) {
@@ -116,19 +129,28 @@ class _DrugsListState extends State<DrugsList> {
                         onTap: () {
                           Navigator.of(context)
                               .push(CupertinoPageRoute(builder: (context) {
-                            return AddEditDrug(drug: drugList[index]);
-                          }));
+                            return AddEditDrug(
+                              drug: _drugList[index],
+                              userid: widget.user.id,
+                            );
+                          })).then((value) {
+                            if (value != null) {
+                              setState(() {
+                                _drugList[index] = value;
+                              });
+                            }
+                          });
                         },
                         leading: Icon(
                           Icons.inbox,
                           color: Style.redColor,
                         ),
                         title: Text(
-                          drugList[index].name,
+                          _drugList[index].name,
                           style: Theme.of(context).textTheme.bodyText2,
                         ),
                         subtitle: Text(
-                          drugList[index].cinit.toString(),
+                          _drugList[index].cinit.toString(),
                           style: Theme.of(context).textTheme.caption,
                         ),
                         trailing: Padding(

@@ -80,6 +80,14 @@ class DatabaseHelper {
 
   //drugs
 
+  static Future<int> insertDrug(Drug drug) async {
+    return await _db.insert(
+      "drug",
+      drug.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
   static Future<int> updateDrug(Drug drug) async {
     return await _db.update(
       "drug",

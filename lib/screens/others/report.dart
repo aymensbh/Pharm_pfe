@@ -28,7 +28,7 @@ class Report extends StatelessWidget {
         children: [
           Icon(
             Icons.error,
-            color: Style.secondaryColor,
+            color: Style.greenColor,
             size: 120,
           ),
           FlatButton(

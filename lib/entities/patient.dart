@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
+
 class Patient {
-  int id;
+  int id, userid;
   String fullname, doctor, birthdate, phone, address;
   num sc;
 
@@ -7,6 +9,8 @@ class Patient {
       {this.id,
       this.fullname,
       this.birthdate,
+      @required this.userid,
+      @required this.doctor,
       this.sc,
       this.phone,
       this.address});
@@ -19,6 +23,7 @@ class Patient {
     phone = map["patient_phone"];
     address = map["patient_address"];
     sc = map["patient_sc"];
+    userid = map["user_id"];
   }
 
   Map<String, dynamic> toMap() {
@@ -30,6 +35,7 @@ class Patient {
       "patient_phone": phone,
       "patient_address": address,
       "patient_sc": sc,
+      "user_id": userid
     };
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pharm_pfe/authentification/login_page.dart';
 import 'package:pharm_pfe/customWidgets/custom_grid_item.dart';
 import 'package:pharm_pfe/customWidgets/custom_grid_tool.dart';
 import 'package:pharm_pfe/entities/user.dart';
@@ -26,21 +27,46 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Style.lightBackgroundColor,
       appBar: AppBar(
         actions: <Widget>[
-          PopupMenuButton(
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem(
-                  height: 40,
-                  child: Text("Paramètres"),
-                  value: 0,
-                )
-              ];
-            },
-            onSelected: (value) {
-              if (value == 0) {
-                //TODO: push Settings
-              }
-            },
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: IconButton(
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                size: 28,
+              ),
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return BottomSheet(
+                          elevation: 2,
+                          enableDrag: false,
+                          onClosing: () {},
+                          builder: (context) {
+                            return ListTile(
+                              onTap: () {
+                                Navigator.of(context).pop(true);
+                              },
+                              leading: Icon(
+                                Icons.exit_to_app,
+                                color: Style.redColor,
+                              ),
+                              title: Text(
+                                "Déconextion",
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                            );
+                          });
+                    }).then((value) {
+                  if (value != null && value) {
+                    Navigator.of(context)
+                        .pushReplacement(CupertinoPageRoute(builder: (context) {
+                      return LoginPage();
+                    }));
+                  }
+                });
+              },
+            ),
           )
         ],
         elevation: 2,
@@ -64,7 +90,9 @@ class _HomePageState extends State<HomePage> {
             color: Style.purpleColor,
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                return PatientsList();
+                return PatientsList(
+                  user: widget.user,
+                );
               }));
             },
             title: "Patients",
@@ -74,7 +102,9 @@ class _HomePageState extends State<HomePage> {
             color: Style.redColor,
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                return DrugsList();
+                return DrugsList(
+                  user: widget.user,
+                );
               }));
             },
             title: "Médicaments",
@@ -97,18 +127,20 @@ class _HomePageState extends State<HomePage> {
                 crossAxisCount: 2, mainAxisSpacing: 4, crossAxisSpacing: 4),
             children: <Widget>[
               CustomGridToolItem(
-                icon: Icons.help_outline,
+                icon: Icons.person_outline,
                 color: Style.secondaryColor,
                 onTap: () {
                   Navigator.of(context)
                       .push(CupertinoPageRoute(builder: (context) {
-                    return About();
+                    return About(
+                      user: widget.user,
+                    );
                   }));
                 },
               ),
               CustomGridToolItem(
                 icon: Icons.info_outline,
-                color: Style.secondaryColor,
+                color: Style.greenColor,
                 onTap: () {
                   Navigator.of(context)
                       .push(CupertinoPageRoute(builder: (context) {

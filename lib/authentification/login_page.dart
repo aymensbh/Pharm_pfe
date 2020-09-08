@@ -106,7 +106,15 @@ class _LoginPageState extends State<LoginPage> {
                 child: FlatButton(
                   color: Style.accentColor,
                   onPressed: () {
-                    _validate();
+                    Navigator.of(context)
+                        .pushReplacement(CupertinoPageRoute(builder: (contex) {
+                      return HomePage(
+                        user: User(id: 2, password: "AAA", username: "AAAA"),
+                      );
+                    }));
+                    //TODO redo this
+
+                    //_validate();
                   },
                   child: Text("S'identifier",
                       style: Theme.of(context)
@@ -146,16 +154,13 @@ class _LoginPageState extends State<LoginPage> {
                 return AlertDialog(
                   elevation: 2,
                   title: Text("Nom d'utilisateur ou mot de passe incorrect!",
-                      style: Theme.of(context)
-                          .textTheme
-                          .caption
-                          .copyWith(color: Style.redColor)),
+                      style: Theme.of(context).textTheme.caption),
                   actions: [
                     FlatButton(
                       splashColor: Style.lightBackgroundColor,
                       child: Text(
-                        "Ok",
-                        style: Theme.of(context).textTheme.caption,
+                        "Réessayer",
+                        style: Theme.of(context).textTheme.bodyText2,
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
@@ -167,6 +172,7 @@ class _LoginPageState extends State<LoginPage> {
         } else {
           Navigator.of(context)
               .pushReplacement(CupertinoPageRoute(builder: (contex) {
+            print(value[0]["user_id"]);
             return HomePage(
               user: User.fromMap(value[0]),
             );

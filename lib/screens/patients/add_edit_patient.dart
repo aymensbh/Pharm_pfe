@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
+import 'package:pharm_pfe/backend/sqlitedatabase_helper.dart';
 import 'package:pharm_pfe/entities/patient.dart';
 import 'package:pharm_pfe/style/style.dart';
 
 class AddEditPatient extends StatefulWidget {
   final Patient patient;
 
-  const AddEditPatient({Key key, this.patient}) : super(key: key);
+  final int userid;
+
+  const AddEditPatient({Key key, this.patient, this.userid}) : super(key: key);
   @override
   _AddEditPatientState createState() => _AddEditPatientState();
 }
@@ -63,13 +67,55 @@ class _AddEditPatientState extends State<AddEditPatient> {
   _validateInput() {
     if (_formKey.currentState.validate()) {
       //TODO: save Patient
-      Navigator.of(context).pop(Patient(
-          id: 1,
-          address: addressController.text.trim(),
-          birthdate: "2020/12/12",
-          sc: num.parse(scController.text),
-          fullname: fullnameController.text.trim(),
-          phone: phoneController.text.trim()));
+      if (widget.patient == null) {
+        print("added");
+        DatabaseHelper.insertPatient(Patient(
+                id: null,
+                userid: widget.userid,
+                address: addressController.text.trim(),
+                doctor: doctorController.text.trim(),
+                birthdate: birthDate.isEmpty ? "2000-1-1" : birthDate,
+                sc: num.parse(scController.text),
+                fullname: fullnameController.text.trim(),
+                phone: phoneController.text.trim()))
+            .then((value) {
+          Navigator.of(context).pop(Patient(
+              id: value,
+              userid: widget.userid,
+              address: addressController.text.trim(),
+              doctor: doctorController.text.trim(),
+              birthdate: birthDate.isEmpty ? "2000-1-1" : birthDate,
+              sc: num.parse(scController.text),
+              fullname: fullnameController.text.trim(),
+              phone: phoneController.text.trim()));
+        }).catchError((onError) {
+          return;
+        });
+      } else {
+        print("updated");
+        DatabaseHelper.updatePatient(Patient(
+                id: widget.patient.id,
+                userid: widget.patient.userid,
+                address: addressController.text.trim(),
+                doctor: doctorController.text.trim(),
+                birthdate: birthDate.isEmpty ? "2000-1-1" : birthDate,
+                sc: num.parse(scController.text),
+                fullname: fullnameController.text.trim(),
+                phone: phoneController.text.trim()))
+            .then((value) {
+          Navigator.of(context).pop(Patient(
+              id: widget.patient.id,
+              userid: widget.userid,
+              address: addressController.text.trim(),
+              doctor: doctorController.text.trim(),
+              birthdate: birthDate.isEmpty ? "2000-1-1" : birthDate,
+              sc: num.parse(scController.text),
+              fullname: fullnameController.text.trim(),
+              phone: phoneController.text.trim()));
+        }).catchError((onError) {
+          return;
+        });
+      }
     }
   }
 
@@ -129,7 +175,30 @@ class _AddEditPatientState extends State<AddEditPatient> {
                 child: Material(
                     color: Style.darkBackgroundColor,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        DatePicker.showSimpleDatePicker(
+                          context,
+                          cancelText: "Annuler",
+                          titleText: "Date de naissance",
+                          textColor: Style.primaryColor,
+                          initialDate: DateTime(1994),
+                          firstDate: DateTime(1960),
+                          lastDate: DateTime(2012),
+                          dateFormat: "dd-MMMM-yyyy",
+                          locale: DateTimePickerLocale.fr,
+                          looping: true,
+                        ).then((value) {
+                          if (value != null) {
+                            setState(() {
+                              birthDate = value.year.toString() +
+                                  "-" +
+                                  value.month.toString() +
+                                  "-" +
+                                  value.day.toString();
+                            });
+                          }
+                        });
+                      },
                       child: Container(
                           padding: EdgeInsets.symmetric(vertical: 18),
                           decoration: BoxDecoration(

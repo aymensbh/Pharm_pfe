@@ -17,7 +17,10 @@ class CustomGridToolItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(0),
         onTap: onTap,
         child: Container(
-          child: Icon(icon, size: 28, color: color),
+          alignment: Alignment.center,
+          child: CircleAvatar(
+              backgroundColor: color,
+              child: Icon(icon, size: 22, color: Style.darkBackgroundColor)),
         ),
       ),
     );
