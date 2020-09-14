@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pharm_pfe/backend/sqlitedatabase_helper.dart';
 import 'package:pharm_pfe/entities/user.dart';
 import 'package:pharm_pfe/style/style.dart';
 
@@ -11,6 +12,29 @@ class About extends StatefulWidget {
 }
 
 class _AboutState extends State<About> {
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  TextEditingController _newPasswordController = new TextEditingController();
+  InputDecoration _inputDecoration(String lable) {
+    return InputDecoration(
+        labelText: lable,
+        errorStyle:
+            Theme.of(context).textTheme.caption.copyWith(color: Style.redColor),
+        labelStyle: Theme.of(context).textTheme.caption,
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Style.redColor),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Style.redColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Style.primaryColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Style.accentColor),
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +96,81 @@ class _AboutState extends State<About> {
           ListTile(
             onTap: () {
               //TODO update password
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return SimpleDialog(
+                      elevation: 2,
+                      title: Text(
+                        "Mot de passe Modification",
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      children: [
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: TextFormField(
+                                  validator: (input) {
+                                    if (input.trim() != widget.user.password) {
+                                      return "mot de passe érroné";
+                                    }
+                                  },
+                                  obscureText: true,
+                                  decoration:
+                                      _inputDecoration("Ancien mot de passe"),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: TextFormField(
+                                  controller: _newPasswordController,
+                                  validator: (input) {
+                                    if (input.trim().length > 20 ||
+                                        input.trim().length < 4) {
+                                      return "mot de passe érroné";
+                                    }
+                                  },
+                                  obscureText: true,
+                                  decoration:
+                                      _inputDecoration("Nouveau mot de passe"),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                    "Anuller",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption
+                                        .copyWith(color: Style.secondaryColor),
+                                  )),
+                              FlatButton(
+                                  onPressed: () {
+                                    _validate();
+                                  },
+                                  child: Text("Confirmer",
+                                      style:
+                                          Theme.of(context).textTheme.caption)),
+                            ],
+                          ),
+                        )
+                      ],
+                    );
+                  });
             },
             title: Text(
               "Mot de passe",
@@ -103,6 +202,18 @@ class _AboutState extends State<About> {
         ],
       ),
     );
+  }
+
+  _validate() {
+    if (_formKey.currentState.validate()) {
+      DatabaseHelper.updateUser(User(
+              id: widget.user.id,
+              username: widget.user.username,
+              password: _newPasswordController.text.trim()))
+          .then((value) {
+        Navigator.of(context).pop();
+      });
+    }
   }
 
   String _obscureString(String string) {
