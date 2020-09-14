@@ -22,25 +22,34 @@ class Report extends StatelessWidget {
               .copyWith(color: Style.primaryColor),
         ),
       ),
-      body: Center(
+      body: Container(
+          alignment: Alignment.center,
+          color: Style.lightBackgroundColor,
           child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error,
-            color: Style.greenColor,
-            size: 120,
-          ),
-          FlatButton(
-            color: Style.darkBackgroundColor,
-            onPressed: () {},
-            child: Text("Reporter un error!"),
-          ),
-          SizedBox(
-            height: 100,
-          )
-        ],
-      )),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                backgroundColor: Style.darkBackgroundColor,
+                maxRadius: 80,
+                child: Icon(
+                  Icons.info_outline,
+                  color: Style.primaryColor,
+                  size: 120,
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              RaisedButton(
+                color: Style.darkBackgroundColor,
+                onPressed: () {},
+                child: Text("Reporter un error!"),
+              ),
+              SizedBox(
+                height: 100,
+              )
+            ],
+          )),
     );
   }
 }

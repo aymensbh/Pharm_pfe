@@ -9,8 +9,9 @@ import 'package:pharm_pfe/style/style.dart';
 
 class DrugsList extends StatefulWidget {
   final User user;
+  final bool isSelectable;
 
-  const DrugsList({Key key, this.user}) : super(key: key);
+  const DrugsList({Key key, this.user, this.isSelectable}) : super(key: key);
   @override
   _DrugsListState createState() => _DrugsListState();
 }
@@ -127,19 +128,21 @@ class _DrugsListState extends State<DrugsList> {
                           }
                         },
                         onTap: () {
-                          Navigator.of(context)
-                              .push(CupertinoPageRoute(builder: (context) {
-                            return AddEditDrug(
-                              drug: _drugList[index],
-                              userid: widget.user.id,
-                            );
-                          })).then((value) {
-                            if (value != null) {
-                              setState(() {
-                                _drugList[index] = value;
-                              });
-                            }
-                          });
+                          widget.isSelectable
+                              ? Navigator.of(context).pop(_drugList[index])
+                              : Navigator.of(context)
+                                  .push(CupertinoPageRoute(builder: (context) {
+                                  return AddEditDrug(
+                                    drug: _drugList[index],
+                                    userid: widget.user.id,
+                                  );
+                                })).then((value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      _drugList[index] = value;
+                                    });
+                                  }
+                                });
                         },
                         leading: Icon(
                           Icons.inbox,

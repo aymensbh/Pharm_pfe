@@ -106,15 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: FlatButton(
                   color: Style.accentColor,
                   onPressed: () {
-                    Navigator.of(context)
-                        .pushReplacement(CupertinoPageRoute(builder: (contex) {
-                      return HomePage(
-                        user: User(id: 2, password: "AAA", username: "AAAA"),
-                      );
-                    }));
-                    //TODO redo this
-
-                    //_validate();
+                    _validate();
                   },
                   child: Text("S'identifier",
                       style: Theme.of(context)

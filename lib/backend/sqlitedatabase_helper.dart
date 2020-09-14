@@ -1,3 +1,4 @@
+import 'package:pharm_pfe/entities/analysis.dart';
 import 'package:pharm_pfe/entities/drug.dart';
 import 'package:pharm_pfe/entities/patient.dart';
 import 'package:pharm_pfe/entities/user.dart';
@@ -78,6 +79,16 @@ class DatabaseHelper {
     );
   }
 
+  static Future<List<Map<String, dynamic>>> selectSpecificPatient(
+      int patientId) async {
+    return await _db.query(
+      "patient",
+      where: "patient_id = ?",
+      whereArgs: [patientId],
+      distinct: true,
+    );
+  }
+
   //drugs
 
   static Future<int> insertDrug(Drug drug) async {
@@ -111,7 +122,48 @@ class DatabaseHelper {
     );
   }
 
+  static Future<List<Map<String, dynamic>>> selectSpecificDrug(
+      int drugId) async {
+    return await _db.query(
+      "drug",
+      where: "drug_id = ?",
+      whereArgs: [drugId],
+      distinct: true,
+    );
+  }
+
   //TODO: poche
+
+  static Future<int> insertPoch(Analysis analysis) async {
+    return await _db.insert(
+      "poch",
+      analysis.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  static Future<int> updatePoch(Analysis analysis) async {
+    return await _db.update(
+      "poch",
+      analysis.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+      where: 'poch_id = ?',
+      whereArgs: [analysis.id],
+    );
+  }
+
+  static Future<int> deletePoch(int id) async {
+    return await _db.delete("poch", where: "poch_id = ?", whereArgs: [id]);
+  }
+
+  static Future<List<Map<String, dynamic>>> selectPoch(int userid) async {
+    return await _db.query(
+      "poch",
+      where: "user_id = ?",
+      whereArgs: [userid],
+      distinct: true,
+    );
+  }
 
   static String createUserQuery = """
   CREATE TABLE IF NOT EXISTS user(
@@ -158,10 +210,15 @@ class DatabaseHelper {
     "poch_creationdate" TEXT,
     "poch_adminDose" REAL,
     "poch_finalVolume" REAL,
+    "poch_price" REAL,
+    "poch_maxintervale" REAL,
+    "poch_minintervale" REAL,
     "poch_reliquat" REAL,
     "drug_id" INTEGER,
     "patient_id" INTEGER,
+    "user_id" INTEGER,
     FOREIGN KEY("drug_id") REFERENCES "drug"("drug_id") ON DELETE CASCADE,
+    FOREIGN KEY("user_id") REFERENCES "user"("user_id") ON DELETE CASCADE,
     FOREIGN KEY("patient_id") REFERENCES "patient"("patient_id") ON DELETE CASCADE
   );
   """;

@@ -9,8 +9,9 @@ import 'package:pharm_pfe/style/style.dart';
 
 class PatientsList extends StatefulWidget {
   final User user;
+  final bool isSelectable;
 
-  const PatientsList({Key key, this.user}) : super(key: key);
+  const PatientsList({Key key, this.user, this.isSelectable}) : super(key: key);
   @override
   _PatientsListState createState() => _PatientsListState();
 }
@@ -128,18 +129,21 @@ class _PatientsListState extends State<PatientsList> {
                             }
                           },
                           onTap: () {
-                            Navigator.of(context)
-                                .push(CupertinoPageRoute(builder: (context) {
-                              return AddEditPatient(
-                                  userid: widget.user.id,
-                                  patient: _patientsList[index]);
-                            })).then((value) {
-                              if (value != null) {
-                                setState(() {
-                                  _patientsList[index] = value;
-                                });
-                              }
-                            });
+                            widget.isSelectable
+                                ? Navigator.of(context)
+                                    .pop(_patientsList[index])
+                                : Navigator.of(context).push(
+                                    CupertinoPageRoute(builder: (context) {
+                                    return AddEditPatient(
+                                        userid: widget.user.id,
+                                        patient: _patientsList[index]);
+                                  })).then((value) {
+                                    if (value != null) {
+                                      setState(() {
+                                        _patientsList[index] = value;
+                                      });
+                                    }
+                                  });
                           },
                           leading: Icon(
                             Icons.person,

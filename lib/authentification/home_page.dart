@@ -92,6 +92,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                 return PatientsList(
                   user: widget.user,
+                  isSelectable: false,
                 );
               }));
             },
@@ -104,6 +105,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                 return DrugsList(
                   user: widget.user,
+                  isSelectable: false,
                 );
               }));
             },
@@ -114,7 +116,9 @@ class _HomePageState extends State<HomePage> {
             color: Style.yellowColor,
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                return AnalysisHistoryPage();
+                return AnalysisHistoryPage(
+                  user: widget.user,
+                );
               }));
             },
             title: "Poches",
@@ -128,7 +132,6 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               CustomGridToolItem(
                 icon: Icons.person_outline,
-                color: Style.secondaryColor,
                 onTap: () {
                   Navigator.of(context)
                       .push(CupertinoPageRoute(builder: (context) {
@@ -140,7 +143,6 @@ class _HomePageState extends State<HomePage> {
               ),
               CustomGridToolItem(
                 icon: Icons.info_outline,
-                color: Style.greenColor,
                 onTap: () {
                   Navigator.of(context)
                       .push(CupertinoPageRoute(builder: (context) {

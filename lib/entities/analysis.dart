@@ -1,53 +1,50 @@
-import 'package:pharm_pfe/entities/drug.dart';
-import 'package:pharm_pfe/entities/patient.dart';
-
 class Analysis {
-  int id;
+  int id, userid;
   String creationDate;
-  Patient patient;
-  Drug drug;
-  num adminDose, finalVolume, reliquat;
+  int patientId;
+  int drugId;
+  num adminDose, finalVolume, reliquat, price, maxIntervale, minIntervale;
 
-  Analysis(int id, String creationDate, Patient patient, Drug drug) {
-    this.id = id;
-    this.creationDate = creationDate;
-    this.patient = patient;
-    this.drug = drug;
+  Analysis(
+      {this.id,
+      this.userid,
+      this.creationDate,
+      this.patientId,
+      this.drugId,
+      this.adminDose,
+      this.finalVolume,
+      this.reliquat,
+      this.price,
+      this.maxIntervale,
+      this.minIntervale});
 
-    calculateAdminDose();
-    calculateFinalVolume();
-    claculateReliquat();
-    calculateMaxIntervale(250.0);
-    calculateMinIntervale(250.0);
-    calculatePrice();
+  Analysis.fromMap(Map<String, dynamic> map) {
+    id = map["poch_id"];
+    creationDate = map["poch_creationdate"];
+    adminDose = map["poch_adminDose"];
+    finalVolume = map["poch_finalVolume"];
+    reliquat = map["poch_reliquat"];
+    price = map["poch_price"];
+    maxIntervale = map["poch_maxintervale"];
+    minIntervale = map["poch_minintervale"];
+    drugId = map["drug_id"];
+    patientId = map["patient_id"];
+    userid = map["user_id"];
   }
 
-  num calculateAdminDose() {
-    adminDose = patient.sc * drug.passologie;
-    return adminDose;
-  }
-
-  num calculateFinalVolume() {
-    finalVolume = adminDose / drug.cinit;
-    return finalVolume;
-  }
-
-  num claculateReliquat() {
-    //TODO presentation hmmmmmm ceil
-    reliquat = ((finalVolume / drug.presentation).ceil()) * drug.presentation -
-        finalVolume;
-    return reliquat;
-  }
-
-  num calculateMaxIntervale(num volum) {
-    return drug.cmin * volum;
-  }
-
-  num calculateMinIntervale(num volum) {
-    return drug.cmin * volum;
-  }
-
-  num calculatePrice() {
-    return 0.0;
+  Map<String, dynamic> toMap() {
+    return {
+      "poch_id": id,
+      "poch_creationdate": creationDate,
+      "poch_adminDose": adminDose,
+      "poch_finalVolume": finalVolume,
+      "poch_reliquat": reliquat,
+      "drug_id": drugId,
+      "user_id": userid,
+      "poch_price": price,
+      "patient_id": patientId,
+      "poch_maxintervale": maxIntervale,
+      "poch_minintervale": minIntervale,
+    };
   }
 }
