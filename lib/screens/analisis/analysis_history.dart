@@ -9,19 +9,25 @@ import 'package:pharm_pfe/style/style.dart';
 import 'add_edit_analysis.dart';
 
 class AnalysisHistoryPage extends StatefulWidget {
-  final User user;
+  final int userid;
 
-  const AnalysisHistoryPage({Key key, this.user}) : super(key: key);
+  const AnalysisHistoryPage({Key key, this.userid}) : super(key: key);
   @override
   _AnalysisHistoryPageState createState() => _AnalysisHistoryPageState();
 }
 
 class _AnalysisHistoryPageState extends State<AnalysisHistoryPage> {
   List<Analysis> analysisList = [];
+  User user;
 
   @override
   void initState() {
-    DatabaseHelper.selectPoch(widget.user.id).then((value) {
+    DatabaseHelper.selectSpecificUser(widget.userid).then((value) {
+      setState(() {
+        user = User.fromMap(value[0]);
+      });
+    });
+    DatabaseHelper.selectPoch(widget.userid).then((value) {
       setState(() {
         List.generate(value.length, (index) {
           analysisList.add(Analysis.fromMap(value[index]));
@@ -46,7 +52,7 @@ class _AnalysisHistoryPageState extends State<AnalysisHistoryPage> {
                   Navigator.of(context)
                       .push(CupertinoPageRoute(builder: (context) {
                     return AddEditAnalisis(
-                      user: widget.user,
+                      userid: user.id,
                     );
                   })).then((value) {
                     if (value != null) {
@@ -77,7 +83,7 @@ class _AnalysisHistoryPageState extends State<AnalysisHistoryPage> {
                               .push(CupertinoPageRoute(builder: (context) {
                             return AddEditAnalisis(
                               analysis: analysisList[index],
-                              user: widget.user,
+                              userid: user.id,
                             );
                           })).then((value) {
                             if (value != null) {

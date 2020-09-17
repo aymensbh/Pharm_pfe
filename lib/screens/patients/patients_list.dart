@@ -8,20 +8,27 @@ import 'package:pharm_pfe/screens/patients/add_edit_patient.dart';
 import 'package:pharm_pfe/style/style.dart';
 
 class PatientsList extends StatefulWidget {
-  final User user;
+  final int userid;
   final bool isSelectable;
 
-  const PatientsList({Key key, this.user, this.isSelectable}) : super(key: key);
+  const PatientsList({Key key, this.userid, this.isSelectable})
+      : super(key: key);
   @override
   _PatientsListState createState() => _PatientsListState();
 }
 
 class _PatientsListState extends State<PatientsList> {
   List<Patient> _patientsList = [];
+  User user;
 
   @override
   void initState() {
-    DatabaseHelper.selectPatient(widget.user.id).then((value) {
+    DatabaseHelper.selectSpecificUser(widget.userid).then((value) {
+      setState(() {
+        user = User.fromMap(value[0]);
+      });
+    });
+    DatabaseHelper.selectPatient(widget.userid).then((value) {
       List.generate(value.length, (index) {
         setState(() {
           _patientsList.add(Patient.fromMap(value[index]));
@@ -46,7 +53,7 @@ class _PatientsListState extends State<PatientsList> {
                     Navigator.of(context)
                         .push(CupertinoPageRoute(builder: (context) {
                       return AddEditPatient(
-                        userid: widget.user.id,
+                        userid: user.id,
                       );
                     })).then((value) {
                       if (value != null) {
@@ -135,7 +142,7 @@ class _PatientsListState extends State<PatientsList> {
                                 : Navigator.of(context).push(
                                     CupertinoPageRoute(builder: (context) {
                                     return AddEditPatient(
-                                        userid: widget.user.id,
+                                        userid: user.id,
                                         patient: _patientsList[index]);
                                   })).then((value) {
                                     if (value != null) {

@@ -45,6 +45,16 @@ class DatabaseHelper {
     );
   }
 
+  static Future<List<Map<String, dynamic>>> selectSpecificUser(
+      int userid) async {
+    return await _db.query(
+      "user",
+      where: "user_id = ?",
+      whereArgs: [userid],
+      distinct: true,
+    );
+  }
+
   //patient
 
   static Future<int> insertPatient(Patient patient) async {
@@ -173,7 +183,7 @@ class DatabaseHelper {
     );
   """;
 
-  static String createDrugsQuery = """
+  static String createPatientsQuery = """
   CREATE TABLE IF NOT EXISTS patient(
     "patient_id"	INTEGER PRIMARY KEY AUTOINCREMENT,
     "patient_fullname"	TEXT,
@@ -187,7 +197,7 @@ class DatabaseHelper {
   );
   """;
 
-  static String createPatientsQuery = """
+  static String createDrugsQuery = """
   CREATE TABLE IF NOT EXISTS drug(
     "drug_id"	INTEGER PRIMARY KEY AUTOINCREMENT,
     "drug_name"	TEXT,

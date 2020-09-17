@@ -12,10 +12,16 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  //Liste d'utilisateurs dans la base de donneé
   List<User> users = [];
+
+  //La clé pour acceder aux formulaire
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  //le controller de les deux champ de saisie (textFormField)
   TextEditingController usernameController, passwordController;
 
+  //Décoration des text field
   InputDecoration _inputDecoration(String lable, IconData icon) {
     return InputDecoration(
         prefixIcon: Icon(
@@ -51,8 +57,11 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Style.darkBackgroundColor,
+
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
+
+
       appBar: AppBar(
         backgroundColor: Style.accentColor,
         title: Text(
@@ -63,6 +72,8 @@ class _LoginPageState extends State<LoginPage> {
               .copyWith(color: Style.darkBackgroundColor),
         ),
       ),
+
+      
       body: Form(
         key: _formKey,
         child: ListView(
@@ -166,7 +177,7 @@ class _LoginPageState extends State<LoginPage> {
               .pushReplacement(CupertinoPageRoute(builder: (contex) {
             print(value[0]["user_id"]);
             return HomePage(
-              user: User.fromMap(value[0]),
+              userid: User.fromMap(value[0]).id,
             );
           }));
         }

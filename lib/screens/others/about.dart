@@ -4,35 +4,54 @@ import 'package:pharm_pfe/entities/user.dart';
 import 'package:pharm_pfe/style/style.dart';
 
 class About extends StatefulWidget {
-  final User user;
+  final int userid;
 
-  const About({Key key, this.user}) : super(key: key);
+  const About({Key key, this.userid}) : super(key: key);
   @override
   _AboutState createState() => _AboutState();
 }
 
 class _AboutState extends State<About> {
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _passwordFormKey;
+  GlobalKey<FormState> _usernameFormKey;
 
-  TextEditingController _newPasswordController = new TextEditingController();
+  TextEditingController _newPasswordController;
+  TextEditingController _newUsernameController;
+
   InputDecoration _inputDecoration(String lable) {
     return InputDecoration(
         labelText: lable,
         errorStyle:
             Theme.of(context).textTheme.caption.copyWith(color: Style.redColor),
         labelStyle: Theme.of(context).textTheme.caption,
-        focusedErrorBorder: OutlineInputBorder(
+        focusedErrorBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Style.redColor),
         ),
-        errorBorder: OutlineInputBorder(
+        errorBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Style.redColor),
         ),
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Style.primaryColor),
         ),
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Style.accentColor),
         ));
+  }
+
+  User user;
+
+  @override
+  void initState() {
+    _newPasswordController = TextEditingController();
+    _newUsernameController = TextEditingController();
+    _passwordFormKey = GlobalKey<FormState>();
+    _usernameFormKey = GlobalKey<FormState>();
+    DatabaseHelper.selectSpecificUser(widget.userid).then((value) {
+      setState(() {
+        user = User.fromMap(value[0]);
+      });
+    });
+    super.initState();
   }
 
   @override
@@ -63,7 +82,92 @@ class _AboutState extends State<About> {
           ),
           ListTile(
             onTap: () {
-              //TODO update username
+              _newUsernameController.text = user.username;
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return SimpleDialog(
+                      elevation: 2,
+                      title: Text(
+                        "Nom d'utilisateur Modification",
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                      children: [
+                        Form(
+                          key: _usernameFormKey,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 2.0),
+                                child: TextFormField(
+                                  style: Theme.of(context).textTheme.caption,
+                                  cursorColor: Style.primaryColor,
+                                  controller: _newUsernameController,
+                                  validator: (input) {
+                                    if (input.trim().length > 20 ||
+                                        input.trim().length < 4) {
+                                      return "nom d'utilisateur";
+                                    }
+                                  },
+                                  decoration: _inputDecoration(
+                                      "Nouveau nom d'utilisateur"),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: TextFormField(
+                                  style: Theme.of(context).textTheme.caption,
+                                  cursorColor: Style.primaryColor,
+                                  validator: (input) {
+                                    if (input.trim() != user.password) {
+                                      return "nom d'utilisateur";
+                                    }
+                                  },
+                                  obscureText: true,
+                                  decoration: _inputDecoration("Mot de passe"),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text(
+                                    "Anuller",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption
+                                        .copyWith(color: Style.secondaryColor),
+                                  )),
+                              FlatButton(
+                                  onPressed: () {
+                                    _validateUsername();
+                                  },
+                                  child: Text("Confirmer",
+                                      style:
+                                          Theme.of(context).textTheme.caption)),
+                            ],
+                          ),
+                        )
+                      ],
+                    );
+                  }).then((value) {
+                if (value != null) {
+                  setState(() {
+                    user.username = value;
+                  });
+                }
+              });
             },
             title: Text(
               "Nom d'utilisateur",
@@ -73,7 +177,7 @@ class _AboutState extends State<About> {
                   .copyWith(color: Style.secondaryColor.withOpacity(.6)),
             ),
             subtitle: Text(
-              widget.user.username,
+              user.username,
               style: Theme.of(context)
                   .textTheme
                   .bodyText2
@@ -95,7 +199,7 @@ class _AboutState extends State<About> {
           ),
           ListTile(
             onTap: () {
-              //TODO update password
+              _newPasswordController.clear();
               showDialog(
                   context: context,
                   builder: (context) {
@@ -107,14 +211,17 @@ class _AboutState extends State<About> {
                       ),
                       children: [
                         Form(
-                          key: _formKey,
+                          key: _passwordFormKey,
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(12.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 2.0),
                                 child: TextFormField(
+                                  style: Theme.of(context).textTheme.caption,
+                                  cursorColor: Style.primaryColor,
                                   validator: (input) {
-                                    if (input.trim() != widget.user.password) {
+                                    if (input.trim() != user.password) {
                                       return "mot de passe érroné";
                                     }
                                   },
@@ -124,8 +231,11 @@ class _AboutState extends State<About> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(12.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: TextFormField(
+                                  style: Theme.of(context).textTheme.caption,
+                                  cursorColor: Style.primaryColor,
                                   controller: _newPasswordController,
                                   validator: (input) {
                                     if (input.trim().length > 20 ||
@@ -160,7 +270,7 @@ class _AboutState extends State<About> {
                                   )),
                               FlatButton(
                                   onPressed: () {
-                                    _validate();
+                                    _validatePassword();
                                   },
                                   child: Text("Confirmer",
                                       style:
@@ -170,7 +280,13 @@ class _AboutState extends State<About> {
                         )
                       ],
                     );
+                  }).then((value) {
+                if (value != null) {
+                  setState(() {
+                    user.password = value;
                   });
+                }
+              });
             },
             title: Text(
               "Mot de passe",
@@ -180,7 +296,7 @@ class _AboutState extends State<About> {
                   .copyWith(color: Style.secondaryColor.withOpacity(.6)),
             ),
             subtitle: Text(
-              _obscureString(widget.user.password),
+              _obscureString(user.password),
               style: Theme.of(context)
                   .textTheme
                   .bodyText2
@@ -204,14 +320,26 @@ class _AboutState extends State<About> {
     );
   }
 
-  _validate() {
-    if (_formKey.currentState.validate()) {
+  _validateUsername() {
+    if (_usernameFormKey.currentState.validate()) {
       DatabaseHelper.updateUser(User(
-              id: widget.user.id,
-              username: widget.user.username,
+        id: user.id,
+        username: _newUsernameController.text.trim(),
+        password: user.password,
+      )).then((value) {
+        Navigator.of(context).pop(_newUsernameController.text.trim());
+      });
+    }
+  }
+
+  _validatePassword() {
+    if (_passwordFormKey.currentState.validate()) {
+      DatabaseHelper.updateUser(User(
+              id: user.id,
+              username: user.username,
               password: _newPasswordController.text.trim()))
           .then((value) {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(_newPasswordController.text.trim());
       });
     }
   }

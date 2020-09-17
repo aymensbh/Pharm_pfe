@@ -12,9 +12,9 @@ import 'package:pharm_pfe/screens/patients/patients_list.dart';
 import 'package:pharm_pfe/style/style.dart';
 
 class HomePage extends StatefulWidget {
-  final User user;
+  final int userid;
 
-  const HomePage({Key key, this.user}) : super(key: key);
+  const HomePage({Key key, this.userid}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                 return PatientsList(
-                  user: widget.user,
+                  userid: widget.userid,
                   isSelectable: false,
                 );
               }));
@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                 return DrugsList(
-                  user: widget.user,
+                  userid: widget.userid,
                   isSelectable: false,
                 );
               }));
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                 return AnalysisHistoryPage(
-                  user: widget.user,
+                  userid: widget.userid,
                 );
               }));
             },
@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.of(context)
                       .push(CupertinoPageRoute(builder: (context) {
                     return About(
-                      user: widget.user,
+                      userid: widget.userid,
                     );
                   }));
                 },

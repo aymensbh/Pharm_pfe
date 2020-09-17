@@ -153,17 +153,13 @@ class _SignupPageState extends State<SignupPage> {
   _validate() {
     if (_formKey.currentState.validate()) {
       DatabaseHelper.insertUser(new User(
-              id: 1,
+              id: null,
               password: passwordController.text.trim(),
               username: usernameController.text.trim()))
           .then((value) {
         Navigator.of(context)
             .pushReplacement(CupertinoPageRoute(builder: (contex) {
-          return HomePage(
-              user: User(
-                  id: value,
-                  password: passwordController.text.trim(),
-                  username: usernameController.text.trim()));
+          return HomePage(userid: value);
         }));
       }).catchError((onError) {
         showDialog(

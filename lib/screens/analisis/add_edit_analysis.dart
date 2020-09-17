@@ -11,9 +11,10 @@ import 'package:pharm_pfe/style/style.dart';
 
 class AddEditAnalisis extends StatefulWidget {
   final Analysis analysis;
-  final User user;
+  final int userid;
 
-  const AddEditAnalisis({Key key, this.analysis, this.user}) : super(key: key);
+  const AddEditAnalisis({Key key, this.analysis, this.userid})
+      : super(key: key);
   @override
   _AddEditAnalisisState createState() => _AddEditAnalisisState();
 }
@@ -22,6 +23,7 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
   Patient patient;
   Drug drug;
   Analysis analysis;
+  User user;
   String creationDate = DateTime.now().year.toString() +
       "-" +
       DateTime.now().month.toString() +
@@ -30,11 +32,16 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
 
   @override
   void initState() {
+    DatabaseHelper.selectSpecificUser(widget.userid).then((value) {
+      setState(() {
+        user = User.fromMap(value[0]);
+      });
+    });
     if (widget.analysis != null) {
       analysis = widget.analysis;
       _initDrugAndPatient();
     } else {
-      analysis = new Analysis();
+      // analysis = new Analysis();
     }
     super.initState();
   }
@@ -59,7 +66,7 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
       DatabaseHelper.insertPoch(analysis).then((value) {
         Navigator.of(context).pop(Analysis(
             id: value,
-            userid: widget.user.id,
+            userid: user.id,
             drugId: drug.id,
             patientId: patient.id,
             adminDose: _calculateAdminDose(),
@@ -73,21 +80,22 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
       });
     } else {
       DatabaseHelper.updatePoch(Analysis(
-            id: widget.analysis.id,
-            userid: widget.user.id,
-            drugId: drug.id,
-            patientId: patient.id,
-            adminDose: _calculateAdminDose(),
-            creationDate: creationDate,
-            finalVolume: _calculateFinalVolume(_calculateAdminDose()),
-            maxIntervale: _calculateMaxIntervale(250.0),
-            minIntervale: _calculateMinIntervale(250.0),
-            price: _calculatePrice(),
-            reliquat: _calculateReliquat(
-                _calculateFinalVolume(_calculateAdminDose())))).then((value) {
+              id: widget.analysis.id,
+              userid: user.id,
+              drugId: drug.id,
+              patientId: patient.id,
+              adminDose: _calculateAdminDose(),
+              creationDate: creationDate,
+              finalVolume: _calculateFinalVolume(_calculateAdminDose()),
+              maxIntervale: _calculateMaxIntervale(250.0),
+              minIntervale: _calculateMinIntervale(250.0),
+              price: _calculatePrice(),
+              reliquat: _calculateReliquat(
+                  _calculateFinalVolume(_calculateAdminDose()))))
+          .then((value) {
         Navigator.of(context).pop(Analysis(
             id: widget.analysis.id,
-            userid: widget.user.id,
+            userid: user.id,
             drugId: drug.id,
             patientId: patient.id,
             adminDose: _calculateAdminDose(),
@@ -147,7 +155,7 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                       Navigator.of(context)
                           .push(CupertinoPageRoute(builder: (context) {
                         return PatientsList(
-                          user: widget.user,
+                          userid: user.id,
                           isSelectable: true,
                         );
                       })).then((value) {
@@ -166,13 +174,43 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                             border: Border(
                                 bottom: BorderSide(
                                     color: Style.secondaryColor, width: 1))),
-                        child: Text(
-                          patient == null
-                              ? "+Selectioner un patient"
-                              : patient.fullname,
-                          style: patient == null
-                              ? Theme.of(context).textTheme.caption
-                              : Theme.of(context).textTheme.bodyText2,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              patient == null
+                                  ? "Selectioner un patient"
+                                  : patient.fullname,
+                              style: patient == null
+                                  ? Theme.of(context).textTheme.caption
+                                  : Theme.of(context).textTheme.bodyText2,
+                            ),
+                            patient != null
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor: Style.accentColor,
+                                      child: Icon(
+                                        Icons.check,
+                                        color: Style.darkBackgroundColor,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor: Style.redColor,
+                                      child: Icon(
+                                        Icons.remove,
+                                        color: Style.darkBackgroundColor,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  )
+                          ],
                         )),
                   ))),
           Padding(
@@ -184,7 +222,7 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                       Navigator.of(context)
                           .push(CupertinoPageRoute(builder: (context) {
                         return DrugsList(
-                          user: widget.user,
+                          userid: user.id,
                           isSelectable: true,
                         );
                       })).then((value) {
@@ -203,13 +241,43 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                             border: Border(
                                 bottom: BorderSide(
                                     color: Style.secondaryColor, width: 1))),
-                        child: Text(
-                          drug == null
-                              ? "+Selectioner un Médicament"
-                              : drug.name,
-                          style: drug == null
-                              ? Theme.of(context).textTheme.caption
-                              : Theme.of(context).textTheme.bodyText2,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              drug == null
+                                  ? "Selectioner un Médicament"
+                                  : drug.name,
+                              style: drug == null
+                                  ? Theme.of(context).textTheme.caption
+                                  : Theme.of(context).textTheme.bodyText2,
+                            ),
+                            drug != null
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor: Style.accentColor,
+                                      child: Icon(
+                                        Icons.check,
+                                        color: Style.darkBackgroundColor,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor: Style.redColor,
+                                      child: Icon(
+                                        Icons.remove,
+                                        color: Style.darkBackgroundColor,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  )
+                          ],
                         )),
                   ))),
           SizedBox(
@@ -236,7 +304,10 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                           border:
                               Border.all(color: Style.secondaryColor, width: 1),
                           borderRadius: BorderRadius.circular(4)),
-                      child: Text(analysis.adminDose.toString() ?? "0.0",
+                      child: Text(
+                          analysis != null
+                              ? analysis.adminDose.toString()
+                              : "0.0",
                           style: Theme.of(context)
                               .textTheme
                               .bodyText2
@@ -264,7 +335,10 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                           border:
                               Border.all(color: Style.secondaryColor, width: 1),
                           borderRadius: BorderRadius.circular(4)),
-                      child: Text(analysis.finalVolume.toString() ?? "0.0",
+                      child: Text(
+                          analysis != null
+                              ? analysis.finalVolume.toString()
+                              : "0.0",
                           style: Theme.of(context)
                               .textTheme
                               .bodyText2
@@ -292,7 +366,10 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                           border:
                               Border.all(color: Style.secondaryColor, width: 1),
                           borderRadius: BorderRadius.circular(4)),
-                      child: Text(analysis.reliquat.toString() ?? "0.0",
+                      child: Text(
+                          analysis != null
+                              ? analysis.reliquat.toString()
+                              : "0.0",
                           style: Theme.of(context)
                               .textTheme
                               .bodyText2
@@ -321,7 +398,7 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                               Border.all(color: Style.secondaryColor, width: 1),
                           borderRadius: BorderRadius.circular(4)),
                       child: Text(
-                          analysis.maxIntervale != null
+                          analysis != null
                               ? "[${analysis.maxIntervale} ; ${analysis.minIntervale}]"
                               : "[0.0 ; 0.0]",
                           style: Theme.of(context)
@@ -347,11 +424,16 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                       padding:
                           EdgeInsets.symmetric(vertical: 18, horizontal: 12),
                       decoration: BoxDecoration(
-                          color: Style.darkBackgroundColor,
-                          border:
-                              Border.all(color: Style.secondaryColor, width: 1),
+                          color: Style.yellowColor,
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 5,
+                                color: Style.secondaryColor.withOpacity(.5),
+                                offset: Offset(1, 1))
+                          ],
                           borderRadius: BorderRadius.circular(4)),
-                      child: Text(analysis.price.toString() ?? "0.0",
+                      child: Text(
+                          analysis != null ? analysis.price.toString() : "0.0",
                           style: Theme.of(context)
                               .textTheme
                               .bodyText2
@@ -392,7 +474,7 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
   _calculatePoch() {
     analysis = Analysis(
         id: null,
-        userid: widget.user.id,
+        userid: user.id,
         drugId: drug.id,
         patientId: patient.id,
         adminDose: _calculateAdminDose(),

@@ -8,20 +8,26 @@ import 'package:pharm_pfe/screens/drugs/add_edit_drug.dart';
 import 'package:pharm_pfe/style/style.dart';
 
 class DrugsList extends StatefulWidget {
-  final User user;
+  final int userid;
   final bool isSelectable;
 
-  const DrugsList({Key key, this.user, this.isSelectable}) : super(key: key);
+  const DrugsList({Key key, this.userid, this.isSelectable}) : super(key: key);
   @override
   _DrugsListState createState() => _DrugsListState();
 }
 
 class _DrugsListState extends State<DrugsList> {
   List<Drug> _drugList = [];
+  User user;
 
   @override
   void initState() {
-    DatabaseHelper.selectDrug(widget.user.id).then((value) {
+    DatabaseHelper.selectSpecificUser(widget.userid).then((value) {
+      setState(() {
+        user = User.fromMap(value[0]);
+      });
+    });
+    DatabaseHelper.selectDrug(widget.userid).then((value) {
       List.generate(value.length, (index) {
         setState(() {
           _drugList.add(Drug.fromMap(value[index]));
@@ -47,7 +53,7 @@ class _DrugsListState extends State<DrugsList> {
                       .push(CupertinoPageRoute(builder: (context) {
                     return AddEditDrug(
                       drug: null,
-                      userid: widget.user.id,
+                      userid: user.id,
                     );
                   })).then((value) {
                     if (value != null) {
@@ -134,7 +140,7 @@ class _DrugsListState extends State<DrugsList> {
                                   .push(CupertinoPageRoute(builder: (context) {
                                   return AddEditDrug(
                                     drug: _drugList[index],
-                                    userid: widget.user.id,
+                                    userid: user.id,
                                   );
                                 })).then((value) {
                                   if (value != null) {
