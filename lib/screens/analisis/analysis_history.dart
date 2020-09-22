@@ -78,6 +78,60 @@ class _AnalysisHistoryPageState extends State<AnalysisHistoryPage> {
               children: List.generate(
                   analysisList.length,
                   (index) => ListTile(
+                        onLongPress: () async {
+                          try {
+                            if (await showDialog(
+                                barrierDismissible: false,
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    elevation: 2,
+                                    title: Text("Supprimer!",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2
+                                            .copyWith(
+                                                color: Style.primaryColor)),
+                                    actions: [
+                                      FlatButton(
+                                          splashColor:
+                                              Style.lightBackgroundColor,
+                                          onPressed: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                          child: Text("Annuler",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption
+                                                  .copyWith(
+                                                      color: Style
+                                                          .secondaryColor))),
+                                      FlatButton(
+                                          splashColor:
+                                              Style.lightBackgroundColor,
+                                          onPressed: () {
+                                            Navigator.of(context).pop(true);
+                                          },
+                                          child: Text("Supprimer",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption
+                                                  .copyWith(
+                                                      color: Style.redColor))),
+                                    ],
+                                  );
+                                })) {
+                              DatabaseHelper.deletePoch(analysisList[index].id)
+                                  .then((value) {
+                                setState(() {
+                                  analysisList.removeAt(index);
+                                });
+                              });
+                            }
+                          } catch (e) {
+                            return;
+                          }
+                        },
                         onTap: () {
                           Navigator.of(context)
                               .push(CupertinoPageRoute(builder: (context) {
