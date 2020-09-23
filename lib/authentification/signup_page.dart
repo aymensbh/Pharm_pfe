@@ -152,7 +152,7 @@ class _SignupPageState extends State<SignupPage> {
 
   _validate() {
     if (_formKey.currentState.validate()) {
-      DatabaseHelper.insertUser(new User(
+      DatabaseHelper.insertUser(User(
               id: null,
               password: passwordController.text.trim(),
               username: usernameController.text.trim()))

@@ -74,7 +74,8 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
             finalVolume: _calculateFinalVolume(_calculateAdminDose()),
             maxIntervale: _calculateMaxIntervale(250.0),
             minIntervale: _calculateMinIntervale(250.0),
-            price: _calculatePrice(),
+            price:
+                _calculatePrice(_calculateFinalVolume(_calculateAdminDose())),
             reliquat: _calculateReliquat(
                 _calculateFinalVolume(_calculateAdminDose()))));
       });
@@ -89,7 +90,8 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
               finalVolume: _calculateFinalVolume(_calculateAdminDose()),
               maxIntervale: _calculateMaxIntervale(250.0),
               minIntervale: _calculateMinIntervale(250.0),
-              price: _calculatePrice(),
+              price:
+                  _calculatePrice(_calculateFinalVolume(_calculateAdminDose())),
               reliquat: _calculateReliquat(
                   _calculateFinalVolume(_calculateAdminDose()))))
           .then((value) {
@@ -103,7 +105,8 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
             finalVolume: _calculateFinalVolume(_calculateAdminDose()),
             maxIntervale: _calculateMaxIntervale(250.0),
             minIntervale: _calculateMinIntervale(250.0),
-            price: _calculatePrice(),
+            price:
+                _calculatePrice(_calculateFinalVolume(_calculateAdminDose())),
             reliquat: _calculateReliquat(
                 _calculateFinalVolume(_calculateAdminDose()))));
       });
@@ -189,24 +192,24 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                                 ? Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: CircleAvatar(
-                                      radius: 16,
+                                      radius: 10,
                                       backgroundColor: Style.accentColor,
                                       child: Icon(
                                         Icons.check,
                                         color: Style.darkBackgroundColor,
-                                        size: 20,
+                                        size: 12,
                                       ),
                                     ),
                                   )
                                 : Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: CircleAvatar(
-                                      radius: 16,
+                                      radius: 10,
                                       backgroundColor: Style.redColor,
                                       child: Icon(
                                         Icons.remove,
                                         color: Style.darkBackgroundColor,
-                                        size: 20,
+                                        size: 12,
                                       ),
                                     ),
                                   )
@@ -256,24 +259,24 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
                                 ? Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: CircleAvatar(
-                                      radius: 16,
+                                      radius: 10,
                                       backgroundColor: Style.accentColor,
                                       child: Icon(
                                         Icons.check,
                                         color: Style.darkBackgroundColor,
-                                        size: 20,
+                                        size: 12,
                                       ),
                                     ),
                                   )
                                 : Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: CircleAvatar(
-                                      radius: 16,
+                                      radius: 10,
                                       backgroundColor: Style.redColor,
                                       child: Icon(
                                         Icons.remove,
                                         color: Style.darkBackgroundColor,
-                                        size: 20,
+                                        size: 12,
                                       ),
                                     ),
                                   )
@@ -454,7 +457,6 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
   }
 
   num _calculateReliquat(num finalVolume) {
-    //TODO presentation ceil
     return ((finalVolume / drug.presentation).ceil()) * drug.presentation -
         finalVolume;
   }
@@ -467,8 +469,8 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
     return drug.cmin * volum;
   }
 
-  num _calculatePrice() {
-    return 0.0;
+  num _calculatePrice(num volum) {
+    return drug.price * volum;
   }
 
   _calculatePoch() {
@@ -482,7 +484,9 @@ class _AddEditAnalisisState extends State<AddEditAnalisis> {
         finalVolume: _calculateFinalVolume(_calculateAdminDose()),
         maxIntervale: _calculateMaxIntervale(250.0),
         minIntervale: _calculateMinIntervale(250.0),
-        price: _calculatePrice(),
+        price: _calculatePrice(
+          _calculateFinalVolume(_calculateAdminDose()),
+        ),
         reliquat:
             _calculateReliquat(_calculateFinalVolume(_calculateAdminDose())));
   }
